@@ -1,6 +1,9 @@
 <?php
 
+use App\Model\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('v1')->group(function () {
+    Route::get('lista', function () {
+        return Usuario::listar(10);
+    });
+    Route::post('cadastra', function (Request $request) {
+        if (Usuario::cadastrar($request)) {
+            return HttpFoundationResponse::create('', 201, []);
+        } else {
+            return response('falha', 400);
+        }
+    });
 });
